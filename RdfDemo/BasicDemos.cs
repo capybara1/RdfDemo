@@ -6,10 +6,12 @@ namespace RdfDemo
     [TestClass]
     public class BasicDemos
     {
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public void UseSimpleGraphToPerformAskQuery()
         {
-            var graph = LoadLocalGraph();
+            var graph = ConstructGraph();
 
             var x = new RDFSharp.Query.RDFVariable("x");
             var patternGroup = new RDFSharp.Query.RDFPatternGroup("PG1");
@@ -27,7 +29,7 @@ namespace RdfDemo
         [TestMethod]
         public void UseSimpleGraphToPerformSelectQuery()
         {
-            var graph = LoadLocalGraph();
+            var graph = ConstructGraph();
 
             var x = new RDFSharp.Query.RDFVariable("x");
             var patternGroup = new RDFSharp.Query.RDFPatternGroup("PG1");
@@ -45,13 +47,14 @@ namespace RdfDemo
             foreach (System.Data.DataRow item in result.SelectResults.Rows)
             {
                 subject = item[0].ToString();
+                TestContext.WriteLine($"Subject: {subject}");
             }
         }
 
         [TestMethod]
         public void UseMultipleGraphToPerformSelectQuery()
         {
-            var firstGraph = LoadLocalGraph();
+            var firstGraph = ConstructGraph();
             var secondGraph = LoadGraphFromJsonLd();
 
             var store = new RDFSharp.Store.RDFMemoryStore();
@@ -78,10 +81,11 @@ namespace RdfDemo
             {
                 context = item[0].ToString();
                 subject = item[1].ToString();
+                TestContext.WriteLine($"Context: {context}, Subject: {subject}");
             }
         }
 
-        private static RDFSharp.Model.RDFGraph LoadLocalGraph()
+        private static RDFSharp.Model.RDFGraph ConstructGraph()
         {
             var graph = new RDFSharp.Model.RDFGraph();
             graph.SetContext(new Uri("http://example.com/context/Local"));
