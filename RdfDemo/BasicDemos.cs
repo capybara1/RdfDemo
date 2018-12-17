@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 
 namespace RdfDemo
 {
@@ -26,9 +29,12 @@ namespace RdfDemo
             RDFSharp.Store.RDFStoreEvents.OnFederationCleared += WriteLine;
         }
 
-        private void WriteLine(string message)
+        [TestMethod]
+        public void DemonstrateSerializationFormatsForSimpleGraph()
         {
-            System.Diagnostics.Debug.WriteLine(message);
+            var graph = ConstructGraph();
+
+            WriteSerializedRepresentations(graph);
         }
 
         [TestMethod]
@@ -83,7 +89,7 @@ namespace RdfDemo
             var store = new RDFSharp.Store.RDFMemoryStore();
             store.MergeGraph(firstGraph);
             store.MergeGraph(secondGraph);
-
+            
             var x = new RDFSharp.Query.RDFVariable("x");
             var y = new RDFSharp.Query.RDFVariable("y");
             var patternGroup = new RDFSharp.Query.RDFPatternGroup("PG1");
@@ -132,7 +138,7 @@ namespace RdfDemo
             var result = new RDFSharp.Model.RDFGraph();
             result.SetContext(new Uri("http://example.com/context/JsonLd"));
 
-            var test = (JsonLD.Core.RDFDataset)JsonLD.Core.JsonLdProcessor.ToRDF(JsonLD.Util.JSONUtils.FromString(@"{
+            var token = (JsonLD.Core.RDFDataset)JsonLD.Core.JsonLdProcessor.ToRDF(JsonLD.Util.JSONUtils.FromString(@"{
                 '@context': 
                 {
                     given_name: 'http://xmlns.com/foaf/0.1/firstName',
@@ -145,7 +151,7 @@ namespace RdfDemo
                 age: 41
             }"));
 
-            foreach (var quad in test.GetQuads("@default"))
+            foreach (var quad in token.GetQuads("@default"))
             {
                 var subject = (JsonLD.Core.RDFDataset.IRI)quad["subject"];
                 var predicate = (JsonLD.Core.RDFDataset.IRI)quad["predicate"];
@@ -157,6 +163,40 @@ namespace RdfDemo
             }
 
             return result;
+        }
+
+        private void WriteSerializedRepresentations(RDFSharp.Model.RDFGraph graph)
+        {
+            foreach (RDFSharp.Model.RDFModelEnums.RDFFormats format in Enum.GetValues(typeof(RDFSharp.Model.RDFModelEnums.RDFFormats)))
+            {
+                WriteLine($"{format} representation of graph '{graph.Context}'");
+                using (var buffer = new MemoryStream())
+                {
+                    graph.ToStream(format, buffer);
+                    var serializationOutput = Encoding.UTF8.GetString(buffer.ToArray());
+                    WriteLine(serializationOutput);
+
+                    if (format == RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples)
+                    {
+                        WriteLine($"JSON-LD representation of graph '{graph.Context}'");
+                        var jsonDocument = JsonLD.Core.JsonLdProcessor.FromRDF(serializationOutput, new JsonLD.Impl.NQuadRDFParser());
+                        var context = JToken.Parse("{ '@context': { '@vocab': 'http://xmlns.com/foaf/0.1/' } }");
+                        jsonDocument = JsonLD.Core.JsonLdProcessor.Compact(jsonDocument, context, new JsonLD.Core.JsonLdOptions());
+                        WriteLine(jsonDocument.ToString());
+                        WriteLine();
+                    }
+                }
+            }
+        }
+
+        private void WriteLine()
+        {
+            System.Diagnostics.Debug.WriteLine(string.Empty);
+        }
+
+        private void WriteLine(string message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
         }
     }
 }
