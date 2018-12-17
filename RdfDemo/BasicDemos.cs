@@ -170,22 +170,28 @@ namespace RdfDemo
             foreach (RDFSharp.Model.RDFModelEnums.RDFFormats format in Enum.GetValues(typeof(RDFSharp.Model.RDFModelEnums.RDFFormats)))
             {
                 WriteLine($"{format} representation of graph '{graph.Context}'");
-                using (var buffer = new MemoryStream())
-                {
-                    graph.ToStream(format, buffer);
-                    var serializationOutput = Encoding.UTF8.GetString(buffer.ToArray());
-                    WriteLine(serializationOutput);
+                var serializationOutput = SerializeGraph(graph, format);
+                WriteLine(serializationOutput);
 
-                    if (format == RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples)
-                    {
-                        WriteLine($"JSON-LD representation of graph '{graph.Context}'");
-                        var jsonDocument = JsonLD.Core.JsonLdProcessor.FromRDF(serializationOutput, new JsonLD.Impl.NQuadRDFParser());
-                        var context = JToken.Parse("{ '@context': { '@vocab': 'http://xmlns.com/foaf/0.1/' } }");
-                        jsonDocument = JsonLD.Core.JsonLdProcessor.Compact(jsonDocument, context, new JsonLD.Core.JsonLdOptions());
-                        WriteLine(jsonDocument.ToString());
-                        WriteLine();
-                    }
+                if (format == RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples)
+                {
+                    WriteLine($"JSON-LD representation of graph '{graph.Context}'");
+                    var jsonDocument = JsonLD.Core.JsonLdProcessor.FromRDF(serializationOutput, new JsonLD.Impl.NQuadRDFParser());
+                    var context = JToken.Parse("{ '@context': { '@vocab': 'http://xmlns.com/foaf/0.1/' } }");
+                    jsonDocument = JsonLD.Core.JsonLdProcessor.Compact(jsonDocument, context, new JsonLD.Core.JsonLdOptions());
+                    WriteLine(jsonDocument.ToString());
+                    WriteLine();
                 }
+            }
+        }
+
+        private string SerializeGraph(RDFSharp.Model.RDFGraph graph, RDFSharp.Model.RDFModelEnums.RDFFormats format)
+        {
+            using (var buffer = new MemoryStream())
+            {
+                graph.ToStream(format, buffer);
+                var result = Encoding.UTF8.GetString(buffer.ToArray());
+                return result;
             }
         }
 
