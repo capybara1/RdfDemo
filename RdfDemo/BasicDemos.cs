@@ -6,7 +6,30 @@ namespace RdfDemo
     [TestClass]
     public class BasicDemos
     {
-        public TestContext TestContext { get; set; }
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            RDFSharp.Model.RDFModelEvents.OnTripleAdded += WriteLine;
+            RDFSharp.Model.RDFModelEvents.OnTripleRemoved += WriteLine;
+            RDFSharp.Model.RDFModelEvents.OnGraphCleared += WriteLine;
+            RDFSharp.Query.RDFQueryEvents.OnSELECTQueryEvaluation += WriteLine;
+            RDFSharp.Query.RDFQueryEvents.OnASKQueryEvaluation += WriteLine;
+            RDFSharp.Query.RDFQueryEvents.OnDESCRIBEQueryEvaluation += WriteLine;
+            RDFSharp.Query.RDFQueryEvents.OnCONSTRUCTQueryEvaluation += WriteLine;
+            RDFSharp.Store.RDFStoreEvents.OnStoreInitialized += WriteLine;
+            RDFSharp.Store.RDFStoreEvents.OnStoreAdded += WriteLine;
+            RDFSharp.Store.RDFStoreEvents.OnStoreOptimized += WriteLine;
+            RDFSharp.Store.RDFStoreEvents.OnStoreRemoved += WriteLine;
+            RDFSharp.Store.RDFStoreEvents.OnStoreCleared += WriteLine;
+            RDFSharp.Store.RDFStoreEvents.OnQuadrupleAdded += WriteLine;
+            RDFSharp.Store.RDFStoreEvents.OnQuadrupleRemoved += WriteLine;
+            RDFSharp.Store.RDFStoreEvents.OnFederationCleared += WriteLine;
+        }
+
+        private void WriteLine(string message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+        }
 
         [TestMethod]
         public void UseSimpleGraphToPerformAskQuery()
@@ -47,7 +70,7 @@ namespace RdfDemo
             foreach (System.Data.DataRow item in result.SelectResults.Rows)
             {
                 subject = item[0].ToString();
-                TestContext.WriteLine($"Subject: {subject}");
+                WriteLine($"Subject: {subject}");
             }
         }
 
@@ -81,7 +104,7 @@ namespace RdfDemo
             {
                 context = item[0].ToString();
                 subject = item[1].ToString();
-                TestContext.WriteLine($"Context: {context}, Subject: {subject}");
+                WriteLine($"Context: {context}, Subject: {subject}");
             }
         }
 

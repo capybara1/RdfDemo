@@ -14,14 +14,13 @@ namespace RdfDemo
         [TestInitialize]
         public void TestInitialize()
         {
-            RDFSemanticsEvents.OnSemanticsInfo += LogEvent;
-            RDFSemanticsEvents.OnSemanticsWarning += LogEvent;
+            RDFSemanticsEvents.OnSemanticsInfo += WriteLine;
+            RDFSemanticsEvents.OnSemanticsWarning += WriteLine;
         }
         
-        private void LogEvent(string message)
+        private void WriteLine(string message)
         {
             System.Diagnostics.Debug.WriteLine(message);
-            TestContext.WriteLine(message);
         }
 
         [TestMethod]
