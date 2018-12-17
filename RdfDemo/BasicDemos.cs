@@ -87,27 +87,27 @@ namespace RdfDemo
 
         private static RDFSharp.Model.RDFGraph ConstructGraph()
         {
-            var graph = new RDFSharp.Model.RDFGraph();
-            graph.SetContext(new Uri("http://example.com/context/Local"));
+            var result = new RDFSharp.Model.RDFGraph();
+            result.SetContext(new Uri("http://example.com/context/Local"));
 
             var exampleNamespace = new RDFSharp.Model.RDFNamespace("ex", "http://example.com/");
             RDFSharp.Model.RDFNamespaceRegister.AddNamespace(exampleNamespace);
 
-            graph.AddTriple(new RDFSharp.Model.RDFTriple(
+            result.AddTriple(new RDFSharp.Model.RDFTriple(
                 new RDFSharp.Model.RDFResource("ex:subject/001"),
                 RDFSharp.Model.RDFVocabulary.FOAF.FIRSTNAME, // Equivalent to RDFResource("foaf:firstName") which is equivalent to RDFResource("http://xmlns.com/foaf/0.1/firstName")
                 new RDFSharp.Model.RDFPlainLiteral("John")));
-            graph.AddTriple(new RDFSharp.Model.RDFTriple(
+            result.AddTriple(new RDFSharp.Model.RDFTriple(
                 new RDFSharp.Model.RDFResource("ex:subject/001"),
                 RDFSharp.Model.RDFVocabulary.FOAF.FAMILY_NAME,
                 new RDFSharp.Model.RDFPlainLiteral("Doe")));
-            return graph;
+            return result;
         }
 
         private static RDFSharp.Model.RDFGraph LoadGraphFromJsonLd()
         {
-            var graph = new RDFSharp.Model.RDFGraph();
-            graph.SetContext(new Uri("http://example.com/context/JsonLd"));
+            var result = new RDFSharp.Model.RDFGraph();
+            result.SetContext(new Uri("http://example.com/context/JsonLd"));
 
             var test = (JsonLD.Core.RDFDataset)JsonLD.Core.JsonLdProcessor.ToRDF(JsonLD.Util.JSONUtils.FromString(@"{
                 '@context': 
@@ -127,13 +127,13 @@ namespace RdfDemo
                 var subject = (JsonLD.Core.RDFDataset.IRI)quad["subject"];
                 var predicate = (JsonLD.Core.RDFDataset.IRI)quad["predicate"];
                 var literal = (JsonLD.Core.RDFDataset.Literal)quad["object"];
-                graph.AddTriple(new RDFSharp.Model.RDFTriple(
+                result.AddTriple(new RDFSharp.Model.RDFTriple(
                     new RDFSharp.Model.RDFResource(subject["value"].ToString()),
                     new RDFSharp.Model.RDFResource(predicate["value"].ToString()),
                     new RDFSharp.Model.RDFPlainLiteral(literal["value"].ToString())));
             }
 
-            return graph;
+            return result;
         }
     }
 }
