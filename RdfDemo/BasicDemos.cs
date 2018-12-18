@@ -1,14 +1,19 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace RdfDemo
 {
     [TestClass]
     public class BasicDemos
     {
+        private static readonly IEnumerable<RDFSharp.Model.RDFModelEnums.RDFFormats> AvailableSerializationFormats = Enum.GetValues(typeof(RDFSharp.Model.RDFModelEnums.RDFFormats))
+            .Cast<RDFSharp.Model.RDFModelEnums.RDFFormats>();
+
         [TestInitialize]
         public void TestInitialize()
         {
@@ -192,21 +197,28 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
 
         private void WriteSerializedRepresentations(RDFSharp.Model.RDFGraph graph)
         {
-            foreach (RDFSharp.Model.RDFModelEnums.RDFFormats format in Enum.GetValues(typeof(RDFSharp.Model.RDFModelEnums.RDFFormats)))
-            {
-                WriteLine($"{format} representation of graph '{graph.Context}'");
-                var serializationOutput = SerializeGraph(graph, format);
-                WriteLine(serializationOutput);
+            var serializationsByFormat = AvailableSerializationFormats.ToDictionary(
+                    f => (object)f,
+                    f => SerializeGraph(graph, f)
+                );
 
-                if (format == RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples)
-                {
-                    WriteLine($"JSON-LD representation of graph '{graph.Context}'");
-                    var jsonDocument = JsonLD.Core.JsonLdProcessor.FromRDF(serializationOutput, new JsonLD.Impl.NQuadRDFParser());
-                    var context = JToken.Parse("{ '@context': { '@vocab': 'http://xmlns.com/foaf/0.1/' } }");
-                    jsonDocument = JsonLD.Core.JsonLdProcessor.Compact(jsonDocument, context, new JsonLD.Core.JsonLdOptions());
-                    WriteLine(jsonDocument.ToString());
-                    WriteLine();
-                }
+            WriteLine($"JSON-LD representation of graph '{graph.Context}'");
+            var jsonDocument = JsonLD.Core.JsonLdProcessor.FromRDF(
+                serializationsByFormat[RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples],
+                new JsonLD.Impl.NQuadRDFParser());
+            var context = JToken.Parse("{ '@context': { '@vocab': 'http://xmlns.com/foaf/0.1/' } }");
+            jsonDocument = JsonLD.Core.JsonLdProcessor.Compact(
+                jsonDocument,
+                context,
+                new JsonLD.Core.JsonLdOptions());
+            serializationsByFormat["JSON-LD"] = jsonDocument.ToString();
+
+            foreach (var kvp in serializationsByFormat)
+            {
+                WriteLine($"{kvp.Key} representation of graph '{graph.Context}'");
+                WriteLine();
+                WriteLine(kvp.Value);
+                WriteLine();
             }
         }
 
@@ -215,7 +227,7 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
             using (var buffer = new MemoryStream())
             {
                 graph.ToStream(format, buffer);
-                var result = Encoding.UTF8.GetString(buffer.ToArray());
+                var result = Encoding.UTF8.GetString(buffer.ToArray()).Trim();
                 return result;
             }
         }
