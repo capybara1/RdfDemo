@@ -12,21 +12,10 @@ namespace RdfDemo
         [TestInitialize]
         public void TestInitialize()
         {
-            RDFSharp.Model.RDFModelEvents.OnTripleAdded += WriteLine;
-            RDFSharp.Model.RDFModelEvents.OnTripleRemoved += WriteLine;
-            RDFSharp.Model.RDFModelEvents.OnGraphCleared += WriteLine;
             RDFSharp.Query.RDFQueryEvents.OnSELECTQueryEvaluation += WriteLine;
             RDFSharp.Query.RDFQueryEvents.OnASKQueryEvaluation += WriteLine;
             RDFSharp.Query.RDFQueryEvents.OnDESCRIBEQueryEvaluation += WriteLine;
             RDFSharp.Query.RDFQueryEvents.OnCONSTRUCTQueryEvaluation += WriteLine;
-            RDFSharp.Store.RDFStoreEvents.OnStoreInitialized += WriteLine;
-            RDFSharp.Store.RDFStoreEvents.OnStoreAdded += WriteLine;
-            RDFSharp.Store.RDFStoreEvents.OnStoreOptimized += WriteLine;
-            RDFSharp.Store.RDFStoreEvents.OnStoreRemoved += WriteLine;
-            RDFSharp.Store.RDFStoreEvents.OnStoreCleared += WriteLine;
-            RDFSharp.Store.RDFStoreEvents.OnQuadrupleAdded += WriteLine;
-            RDFSharp.Store.RDFStoreEvents.OnQuadrupleRemoved += WriteLine;
-            RDFSharp.Store.RDFStoreEvents.OnFederationCleared += WriteLine;
         }
 
         [TestMethod]
