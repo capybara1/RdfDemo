@@ -2,11 +2,16 @@
 
 Demo Code with Examples for educational purpose
 
-## RDF
+## RDF and OWL
 
 ### Reference
 
-- [JSON-LD algorithms](https://json-ld.org/spec/latest/json-ld-api/)
+- [RDF 1.1 Primer](https://www.w3.org/TR/rdf11-primer/)
+- [RDF 1.1 Concepts](https://www.w3.org/TR/rdf11-concepts/)
+- [RDF 1.1 Semantics](https://www.w3.org/TR/rdf11-mt/)
+- [RDF Schema 1.1](https://www.w3.org/TR/rdf-schema/)
+- [OWL 2 Document Overview](https://www.w3.org/TR/2012/REC-owl2-overview-20121211/)
+- [SPARQL 1.1 Overview](http://www.w3.org/TR/sparql11-overview/)
 
 ### Tutorials
 
@@ -24,6 +29,11 @@ Demo Code with Examples for educational purpose
 - [Guide for the libraray RDFSharp](http://dadev.cloudapp.net/Datos%20Abiertos/PDF/ReferenceGuide.pdf)
 
 ## JSON-LD
+
+### Reference
+
+- [JSON-LD](https://www.w3.org/TR/json-ld/)
+- [JSON-LD Algorithms](https://json-ld.org/spec/latest/json-ld-api/)
 
 ### Discussion
 
