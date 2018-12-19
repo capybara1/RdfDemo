@@ -32,8 +32,8 @@ Demo Code with Examples for educational purpose
 
 ### Reference
 
-- [JSON-LD](https://www.w3.org/TR/json-ld/)
-- [JSON-LD Algorithms](https://json-ld.org/spec/latest/json-ld-api/)
+- [JSON-LD 1.0](https://www.w3.org/TR/json-ld/)
+- [JSON-LD 1.1 Processing Algorithms and API](https://www.w3.org/TR/json-ld11-api/)
 
 ### Discussion
 
