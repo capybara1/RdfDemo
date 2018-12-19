@@ -30,6 +30,12 @@ namespace RdfDemo
 
             var ontology = RDFOntology.FromRDFGraph(graph);
 
+            var report = ontology.Validate();
+            foreach (var error in report.SelectErrors())
+            {
+                WriteLine(error.EvidenceMessage);
+            }
+
             var reasoner = RDFOntologyReasoner.CreateNew("Default")
                 .WithRule(RDFBASEReasonerRuleset.InverseOfEntailment);
 
@@ -67,7 +73,10 @@ namespace RdfDemo
 <http://example.com/demo#childOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
 <http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.com/demo#Person> .
-<http://example.com/demo#childOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://example.com/demo#parentOf> .
+_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
+_:genid1 <http://www.w3.org/2002/07/owl#onProperty> <http://example.com/demo#childOf> .
+_:genid1 <http://www.w3.org/2002/07/owl#maxCardinality> ""2""^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> . 
+< http://example.com/demo#childOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://example.com/demo#parentOf> .
 <http://example.com/demo#subject001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/demo#Person> .
 <http://example.com/demo#subject002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/demo#Person> .
 <http://example.com/demo#subject001> <http://example.com/demo#childOf> <http://example.com/demo#subject002> .
