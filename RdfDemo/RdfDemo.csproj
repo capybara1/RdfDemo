@@ -46,6 +46,7 @@
     <Compile Include="BasicDemos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SemanticsDemos.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="json-ld.net">

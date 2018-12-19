@@ -11,16 +11,13 @@ namespace RdfDemo
     [TestClass]
     public class BasicDemos
     {
-        private static readonly IEnumerable<RDFSharp.Model.RDFModelEnums.RDFFormats> AvailableSerializationFormats = Enum.GetValues(typeof(RDFSharp.Model.RDFModelEnums.RDFFormats))
-            .Cast<RDFSharp.Model.RDFModelEnums.RDFFormats>();
-
         [TestInitialize]
         public void TestInitialize()
         {
-            RDFSharp.Query.RDFQueryEvents.OnSELECTQueryEvaluation += WriteLine;
-            RDFSharp.Query.RDFQueryEvents.OnASKQueryEvaluation += WriteLine;
-            RDFSharp.Query.RDFQueryEvents.OnDESCRIBEQueryEvaluation += WriteLine;
-            RDFSharp.Query.RDFQueryEvents.OnCONSTRUCTQueryEvaluation += WriteLine;
+            RDFSharp.Query.RDFQueryEvents.OnSELECTQueryEvaluation += Util.WriteLine;
+            RDFSharp.Query.RDFQueryEvents.OnASKQueryEvaluation += Util.WriteLine;
+            RDFSharp.Query.RDFQueryEvents.OnDESCRIBEQueryEvaluation += Util.WriteLine;
+            RDFSharp.Query.RDFQueryEvents.OnCONSTRUCTQueryEvaluation += Util.WriteLine;
         }
 
         [TestMethod]
@@ -28,13 +25,13 @@ namespace RdfDemo
         {
             var graph = ConstructGraph();
 
-            WriteSerializedRepresentations(graph);
+            Util.WriteSerializedRepresentations(graph);
         }
 
         [TestMethod]
         public void DemonstrateSerializationFormatsForContainer()
         {
-            var graph = DeserializeGraph(
+            var graph = Util.DeserializeGraph(
                 @"
 <http://example.org/courses/6.001> <http://example.org/students/vocab#students> _:genid1 .
 _:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> .
@@ -44,13 +41,13 @@ _:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#_3> <http://example.org/stu
 ".Trim(),
                 RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples);
 
-            WriteSerializedRepresentations(graph);
+            Util.WriteSerializedRepresentations(graph);
         }
 
         [TestMethod]
         public void DemonstrateSerializationFormatsForCollection()
         {
-            var graph = DeserializeGraph(
+            var graph = Util.DeserializeGraph(
                 @"
 <http://recshop.fake/cd/Beatles> <http://recshop.fake/cd#artist> _:genid1 .
 _:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://recshop.fake/cd/Beatles/George> .
@@ -64,7 +61,7 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
 ".Trim(),
                 RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples);
 
-            WriteSerializedRepresentations(graph);
+            Util.WriteSerializedRepresentations(graph);
         }
 
         [TestMethod]
@@ -106,7 +103,7 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
             foreach (System.Data.DataRow item in result.SelectResults.Rows)
             {
                 subject = item[0].ToString();
-                WriteLine($"Subject: {subject}");
+                Util.WriteLine($"Subject: {subject}");
             }
         }
 
@@ -140,7 +137,7 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
             {
                 context = item[0].ToString();
                 subject = item[1].ToString();
-                WriteLine($"Context: {context}, Subject: {subject}");
+                Util.WriteLine($"Context: {context}, Subject: {subject}");
             }
         }
 
@@ -193,62 +190,6 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
             }
 
             return result;
-        }
-
-        private void WriteSerializedRepresentations(RDFSharp.Model.RDFGraph graph)
-        {
-            var serializationsByFormat = AvailableSerializationFormats.ToDictionary(
-                    f => (object)f,
-                    f => SerializeGraph(graph, f)
-                );
-
-            WriteLine($"JSON-LD representation of graph '{graph.Context}'");
-            var jsonDocument = JsonLD.Core.JsonLdProcessor.FromRDF(
-                serializationsByFormat[RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples],
-                new JsonLD.Impl.NQuadRDFParser());
-            var context = JToken.Parse("{ '@context': { '@vocab': 'http://xmlns.com/foaf/0.1/' } }");
-            jsonDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                jsonDocument,
-                context,
-                new JsonLD.Core.JsonLdOptions());
-            serializationsByFormat["JSON-LD"] = jsonDocument.ToString();
-
-            foreach (var kvp in serializationsByFormat)
-            {
-                WriteLine($"{kvp.Key} representation of graph '{graph.Context}'");
-                WriteLine();
-                WriteLine(kvp.Value);
-                WriteLine();
-            }
-        }
-
-        private string SerializeGraph(RDFSharp.Model.RDFGraph graph, RDFSharp.Model.RDFModelEnums.RDFFormats format)
-        {
-            using (var buffer = new MemoryStream())
-            {
-                graph.ToStream(format, buffer);
-                var result = Encoding.UTF8.GetString(buffer.ToArray()).Trim();
-                return result;
-            }
-        }
-
-        private RDFSharp.Model.RDFGraph DeserializeGraph(string data, RDFSharp.Model.RDFModelEnums.RDFFormats format)
-        {
-            using (var buffer = new MemoryStream(Encoding.UTF8.GetBytes(data)))
-            {
-                var result = RDFSharp.Model.RDFGraph.FromStream(format, buffer);
-                return result;
-            }
-        }
-
-        private void WriteLine()
-        {
-            System.Diagnostics.Debug.WriteLine(string.Empty);
-        }
-
-        private void WriteLine(string message)
-        {
-            System.Diagnostics.Debug.WriteLine(message);
         }
     }
 }
