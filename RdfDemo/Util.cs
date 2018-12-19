@@ -20,15 +20,15 @@ namespace RdfDemo
                 );
 
             WriteLine($"JSON-LD representation of graph '{graph.Context}'");
-            var jsonDocument = JsonLD.Core.JsonLdProcessor.FromRDF(
+            var contentDocument = JsonLD.Core.JsonLdProcessor.FromRDF(
                 serializationsByFormat[RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples],
                 new JsonLD.Impl.NQuadRDFParser());
-            var context = JToken.Parse("{ '@context': { '@vocab': 'http://xmlns.com/foaf/0.1/' } }");
-            jsonDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                jsonDocument,
-                context,
+            var contextDocument = JToken.Parse("{ '@context': { '@vocab': 'http://xmlns.com/foaf/0.1/' } }");
+            contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
+                contentDocument,
+                contextDocument,
                 new JsonLD.Core.JsonLdOptions());
-            serializationsByFormat["JSON-LD"] = jsonDocument.ToString();
+            serializationsByFormat["JSON-LD"] = contentDocument.ToString();
 
             foreach (var kvp in serializationsByFormat)
             {
