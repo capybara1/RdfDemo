@@ -57,6 +57,27 @@ namespace RdfDemo
                 return result;
             }
         }
+        
+        public static RDFSharp.Model.RDFGraph DeserializeGraphFromJsonLd(string data)
+        {
+            var result = new RDFSharp.Model.RDFGraph();
+            result.SetContext(new Uri("http://example.com/context/JsonLd"));
+
+            var token = (JsonLD.Core.RDFDataset)JsonLD.Core.JsonLdProcessor.ToRDF(JsonLD.Util.JSONUtils.FromString(data));
+
+            foreach (var quad in token.GetQuads("@default"))
+            {
+                var subject = (JsonLD.Core.RDFDataset.IRI)quad["subject"];
+                var predicate = (JsonLD.Core.RDFDataset.IRI)quad["predicate"];
+                var literal = (JsonLD.Core.RDFDataset.Literal)quad["object"];
+                result.AddTriple(new RDFSharp.Model.RDFTriple(
+                    new RDFSharp.Model.RDFResource(subject["value"].ToString()),
+                    new RDFSharp.Model.RDFResource(predicate["value"].ToString()),
+                    new RDFSharp.Model.RDFPlainLiteral(literal["value"].ToString())));
+            }
+
+            return result;
+        }
 
         public static void WriteLine()
         {

@@ -162,10 +162,7 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
 
         private static RDFSharp.Model.RDFGraph LoadGraphFromJsonLd()
         {
-            var result = new RDFSharp.Model.RDFGraph();
-            result.SetContext(new Uri("http://example.com/context/JsonLd"));
-
-            var token = (JsonLD.Core.RDFDataset)JsonLD.Core.JsonLdProcessor.ToRDF(JsonLD.Util.JSONUtils.FromString(@"{
+            var result = Util.DeserializeGraphFromJsonLd(@"{
                 '@context': 
                 {
                     given_name: 'http://xmlns.com/foaf/0.1/firstName',
@@ -176,18 +173,7 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
                 given_name: 'Jane',
                 family_name: 'Doe',
                 age: 41
-            }"));
-
-            foreach (var quad in token.GetQuads("@default"))
-            {
-                var subject = (JsonLD.Core.RDFDataset.IRI)quad["subject"];
-                var predicate = (JsonLD.Core.RDFDataset.IRI)quad["predicate"];
-                var literal = (JsonLD.Core.RDFDataset.Literal)quad["object"];
-                result.AddTriple(new RDFSharp.Model.RDFTriple(
-                    new RDFSharp.Model.RDFResource(subject["value"].ToString()),
-                    new RDFSharp.Model.RDFResource(predicate["value"].ToString()),
-                    new RDFSharp.Model.RDFPlainLiteral(literal["value"].ToString())));
-            }
+            }");
 
             return result;
         }
