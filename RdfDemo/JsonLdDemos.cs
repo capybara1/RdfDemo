@@ -84,7 +84,6 @@ namespace RdfDemo
                     },
                     'gender': 'http://schema.org/gender',
                     'homepage': {
-                        '@id': 'http://xmlns.com/foaf/0.1/homepage',
                         '@type': '@id'
                     }
                 }
