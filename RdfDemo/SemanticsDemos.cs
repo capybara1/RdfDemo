@@ -95,7 +95,7 @@ namespace RdfDemo
 <http://example.com/demo#parentOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
 <http://example.com/demo#parentOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.com/demo#Person> .
 <http://example.com/demo#parentOf> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://example.com/demo#ancestorOf> .
-<http://example.com/demo#parentOf> <http://www.w3.org/2000/01/rdf-schema#label> ""is ancestor of"" .
+<http://example.com/demo#parentOf> <http://www.w3.org/2000/01/rdf-schema#label> ""is parent of"" .
 <http://example.com/demo#childOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
 <http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.com/demo#Person> .
