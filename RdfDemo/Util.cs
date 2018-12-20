@@ -10,7 +10,8 @@ namespace RdfDemo
     internal static class Util
     {
         private static readonly IEnumerable<RDFSharp.Model.RDFModelEnums.RDFFormats> AvailableSerializationFormats = Enum.GetValues(typeof(RDFSharp.Model.RDFModelEnums.RDFFormats))
-            .Cast<RDFSharp.Model.RDFModelEnums.RDFFormats>();
+            .Cast<RDFSharp.Model.RDFModelEnums.RDFFormats>()
+            .Where(f => f != RDFSharp.Model.RDFModelEnums.RDFFormats.TriX);
 
         public static void WriteSerializedRepresentations(RDFSharp.Model.RDFGraph graph)
         {
