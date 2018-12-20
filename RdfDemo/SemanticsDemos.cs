@@ -74,7 +74,7 @@ namespace RdfDemo
 <http://example.com/demo#Person> <http://www.w3.org/2000/01/rdf-schema#label> ""person"" .
 <http://example.com/demo#name> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
 <http://example.com/demo#name> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
-<http://example.com/demo#name> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<http://example.com/demo#name> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral> .
 <http://example.com/demo#name> <http://www.w3.org/2000/01/rdf-schema#label> ""has name"" .
 <http://example.com/demo#relativeOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#TransitiveProperty> .
 <http://example.com/demo#relativeOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#SymmetricProperty> .
