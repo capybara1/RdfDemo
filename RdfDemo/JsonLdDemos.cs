@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
 namespace RdfDemo
@@ -6,9 +8,12 @@ namespace RdfDemo
     [TestClass]
     public class JsonLdDemos
     {
-        private static readonly JToken ExpandedDocument = JToken.Parse(@"
-        [
-            {
+        private static readonly object John = new object();
+        private static readonly object Jane = new object();
+
+        private static readonly IDictionary<object, JToken> ExpandedDocuments = new Dictionary<object, JToken>
+        {
+            [John] = JToken.Parse(@"{
                 '@id': 'http://example.com/demo/001',
                 '@type': [
                     'http://xmlns.com/foaf/0.1/Person'
@@ -39,8 +44,40 @@ namespace RdfDemo
                         '@id': 'http://www.johndoe.com'
                     }
                 ]
-            }
-        ]".Trim());
+            }"),
+            [Jane] = JToken.Parse(@"{
+                '@id': 'http://example.com/demo/002',
+                '@type': [
+                    'http://xmlns.com/foaf/0.1/Person'
+                ],
+                'http://xmlns.com/foaf/0.1/givenName': [
+                    {
+                        '@value': 'Jane'
+                    }
+                ],
+                'http://xmlns.com/foaf/0.1/familyName': [
+                    {
+                        '@value': 'Doe'
+                    }
+                ],
+                'http://schema.org/birthDate': [
+                    {
+                        '@value': '1970-01-02T00:00:00Z',
+                        '@type': 'http://www.w3.org/2001/XMLSchema#date'
+                    }
+                ],
+                'http://schema.org/gender': [
+                    {
+                        '@value': 'http://schema.org/Female'
+                    }
+                ],
+                'http://xmlns.com/foaf/0.1/knows': [
+                    {
+                        '@id': 'http://example.com/demo/001'
+                    }
+                ]
+            }"),
+        };
 
         [TestMethod]
         public void CompactionWithEmbeddedContext()
@@ -60,12 +97,16 @@ namespace RdfDemo
                     'homepage': {
                         '@id': 'http://xmlns.com/foaf/0.1/homepage',
                         '@type': '@id'
-                    }
+                    },
+                    'knows': {
+                        '@id': 'http://xmlns.com/foaf/0.1/knows',
+                        '@type': '@id'
+                    },
                 }
             }");
             var options = new JsonLD.Core.JsonLdOptions();
             var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                ExpandedDocument,
+                ExpandedDocuments[John],
                 contextDocument,
                 options);
 
@@ -91,7 +132,7 @@ namespace RdfDemo
             }");
             var options = new JsonLD.Core.JsonLdOptions();
             var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                ExpandedDocument,
+                ExpandedDocuments[John],
                 contextDocument,
                 options);
 
@@ -106,7 +147,22 @@ namespace RdfDemo
             }");
             var options = new JsonLD.Core.JsonLdOptions();
             var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                ExpandedDocument,
+                ExpandedDocuments[John],
+                contextDocument,
+                options);
+
+            Util.WriteLine(contentDocument.ToString());
+        }
+
+        [TestMethod]
+        public void CompactionOfGraph()
+        {
+            var contextDocument = JToken.Parse(@"{
+                '@context': [ 'https://json-ld.org/contexts/person.jsonld' ]
+            }");
+            var options = new JsonLD.Core.JsonLdOptions();
+            var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
+                JToken.Parse($"[ {ExpandedDocuments[John]}, {ExpandedDocuments[Jane]} ]"),
                 contextDocument,
                 options);
 
