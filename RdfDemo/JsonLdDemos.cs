@@ -9,6 +9,7 @@ namespace RdfDemo
         private static readonly JToken ExpandedDocument = JToken.Parse(@"
         [
             {
+                '@id': 'http://example.com/demo/001',
                 '@type': [
                     'http://xmlns.com/foaf/0.1/Person'
                 ],
