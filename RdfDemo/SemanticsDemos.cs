@@ -9,18 +9,11 @@ namespace RdfDemo
     [TestClass]
     public class SemanticsDemos
     {
-        public TestContext TestContext { get; set; }
-
         [TestInitialize]
         public void TestInitialize()
         {
-            RDFSemanticsEvents.OnSemanticsInfo += WriteLine;
-            RDFSemanticsEvents.OnSemanticsWarning += WriteLine;
-        }
-        
-        private void WriteLine(string message)
-        {
-            System.Diagnostics.Debug.WriteLine(message);
+            RDFSemanticsEvents.OnSemanticsInfo += Util.WriteLine;
+            RDFSemanticsEvents.OnSemanticsWarning += Util.WriteLine;
         }
 
         [TestMethod]
@@ -33,7 +26,7 @@ namespace RdfDemo
             var report = ontology.Validate();
             foreach (var error in report.SelectErrors())
             {
-                WriteLine(error.EvidenceMessage);
+                Util.WriteLine(error.EvidenceMessage);
             }
 
             var reasoner = RDFOntologyReasoner.CreateNew("Default")
@@ -45,22 +38,27 @@ namespace RdfDemo
             reasoner.ApplyToOntology(ref ontology);
 
             var x = new RDFSharp.Query.RDFVariable("x");
+            var y = new RDFSharp.Query.RDFVariable("y");
             var patternGroup = new RDFSharp.Query.RDFPatternGroup("PG1");
             patternGroup.AddPattern(new RDFSharp.Query.RDFPattern(
                 x,
+                new RDFSharp.Model.RDFResource("http://example.com/demo#name"),
+                new RDFSharp.Model.RDFPlainLiteral("Alice")));
+            patternGroup.AddPattern(new RDFSharp.Query.RDFPattern(
+                y,
                 new RDFSharp.Model.RDFResource("http://example.com/demo#parentOf"),
-                new RDFSharp.Model.RDFResource("http://example.com/demo#subject001")));
+                x));
             var query = new RDFSharp.Query.RDFSelectQuery();
             query.AddPatternGroup(patternGroup);
             var result = query.ApplyToOntology(ontology);
 
             Assert.AreEqual(1, result.SelectResultsCount);
-
-            string subject;
-            foreach (System.Data.DataRow item in result.SelectResults.Rows)
+            
+            foreach (System.Data.DataRow row in result.SelectResults.Rows)
+            foreach (System.Data.DataColumn column in result.SelectResults.Columns)
             {
-                subject = item[0].ToString();
-                TestContext.WriteLine($"Subject: {subject}");
+                var cellValue = row[column];
+                Util.WriteLine($"{column.ColumnName}: {cellValue}");
             }
         }
 
@@ -70,6 +68,10 @@ namespace RdfDemo
 <http://example.com/demo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
 <http://example.com/demo#Person> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://example.com/demo#Person> <http://www.w3.org/2000/01/rdf-schema#label> ""person"" .
+<http://example.com/demo#name> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://example.com/demo#name> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
+<http://example.com/demo#name> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2001/XMLSchema#string> .
+<http://example.com/demo#name> <http://www.w3.org/2000/01/rdf-schema#label> ""has name"" .
 <http://example.com/demo#relativeOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#TransitiveProperty> .
 <http://example.com/demo#relativeOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#SymmetricProperty> .
 <http://example.com/demo#relativeOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
@@ -100,11 +102,11 @@ _:genid1 <http://www.w3.org/2002/07/owl#onProperty> <http://example.com/demo#chi
 _:genid1 <http://www.w3.org/2002/07/owl#maxCardinality> ""2""^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> . 
 <http://example.com/demo#childOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://example.com/demo#parentOf> .
 <http://example.com/demo#subject001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/demo#Person> .
-<http://example.com/demo#subject001> <http://xmlns.com/foaf/0.1/givenName> ""Alice"" .
+<http://example.com/demo#subject001> <http://example.com/demo#name> ""Alice"" .
 <http://example.com/demo#subject002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/demo#Person> .
-<http://example.com/demo#subject002> <http://xmlns.com/foaf/0.1/givenName> ""Bob"" .
+<http://example.com/demo#subject002> <http://example.com/demo#name> ""Bob"" .
 <http://example.com/demo#subject003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/demo#Person> .
-<http://example.com/demo#subject003> <http://xmlns.com/foaf/0.1/givenName> ""Claire"" .
+<http://example.com/demo#subject003> <http://example.com/demo#name> ""Claire"" .
 <http://example.com/demo#subject001> <http://example.com/demo#childOf> <http://example.com/demo#subject002> .
 <http://example.com/demo#subject002> <http://example.com/demo#childOf> <http://example.com/demo#subject003> .
 ".Trim()));

@@ -99,11 +99,11 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
 
             Assert.AreEqual(1, result.SelectResultsCount);
 
-            string subject;
-            foreach (System.Data.DataRow item in result.SelectResults.Rows)
+            foreach (System.Data.DataRow row in result.SelectResults.Rows)
+            foreach (System.Data.DataColumn column in result.SelectResults.Columns)
             {
-                subject = item[0].ToString();
-                Util.WriteLine($"Subject: {subject}");
+                var cellValue = row[column];
+                Util.WriteLine($"{column.ColumnName}: {cellValue}");
             }
         }
 
@@ -131,13 +131,11 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
 
             Assert.AreEqual(2, result.SelectResultsCount);
 
-            string context;
-            string subject;
-            foreach (System.Data.DataRow item in result.SelectResults.Rows)
+            foreach (System.Data.DataRow row in result.SelectResults.Rows)
+            foreach (System.Data.DataColumn column in result.SelectResults.Columns)
             {
-                context = item[0].ToString();
-                subject = item[1].ToString();
-                Util.WriteLine($"Context: {context}, Subject: {subject}");
+                var cellValue = row[column];
+                Util.WriteLine($"{column.ColumnName}: {cellValue}");
             }
         }
 
