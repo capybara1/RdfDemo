@@ -37,6 +37,9 @@ namespace RdfDemo
             }
 
             var reasoner = RDFOntologyReasoner.CreateNew("Default")
+                .WithRule(RDFBASEReasonerRuleset.SubPropertyTransitivity)
+                .WithRule(RDFBASEReasonerRuleset.TransitivePropertyEntailment)
+                .WithRule(RDFBASEReasonerRuleset.SymmetricPropertyEntailment)
                 .WithRule(RDFBASEReasonerRuleset.InverseOfEntailment);
 
             reasoner.ApplyToOntology(ref ontology);
@@ -66,20 +69,44 @@ namespace RdfDemo
             var buffer = new MemoryStream(Encoding.UTF8.GetBytes(@"
 <http://example.com/demo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
 <http://example.com/demo#Person> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://example.com/demo#Person> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://example.com/demo#Person> <http://www.w3.org/2000/01/rdf-schema#label> ""person"" .
+<http://example.com/demo#relativeOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#TransitiveProperty> .
+<http://example.com/demo#relativeOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#SymmetricProperty> .
+<http://example.com/demo#relativeOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
+<http://example.com/demo#relativeOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.com/demo#Person> .
+<http://example.com/demo#relativeOf> <http://www.w3.org/2000/01/rdf-schema#label> ""is relative of"" .
+<http://example.com/demo#ancestorOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#TransitiveProperty> .
+<http://example.com/demo#ancestorOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
+<http://example.com/demo#ancestorOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.com/demo#Person> .
+<http://example.com/demo#ancestorOf> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://example.com/demo#relativeOf> .
+<http://example.com/demo#ancestorOf> <http://www.w3.org/2000/01/rdf-schema#label> ""is ancestor of"" .
+<http://example.com/demo#predecessorOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#TransitiveProperty> .
+<http://example.com/demo#predecessorOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
+<http://example.com/demo#predecessorOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.com/demo#Person> .
+<http://example.com/demo#predecessorOf> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://example.com/demo#relativeOf> .
+<http://example.com/demo#predecessorOf> <http://www.w3.org/2000/01/rdf-schema#label> ""is predecessor of"" .
 <http://example.com/demo#parentOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://example.com/demo#parentOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
 <http://example.com/demo#parentOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.com/demo#Person> .
+<http://example.com/demo#parentOf> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://example.com/demo#ancestorOf> .
+<http://example.com/demo#parentOf> <http://www.w3.org/2000/01/rdf-schema#label> ""is ancestor of"" .
 <http://example.com/demo#childOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
 <http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.com/demo#Person> .
 <http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.com/demo#Person> .
+<http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://example.com/demo#predecessorOf> .
+<http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#label> ""is child of"" .
 _:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
 _:genid1 <http://www.w3.org/2002/07/owl#onProperty> <http://example.com/demo#childOf> .
 _:genid1 <http://www.w3.org/2002/07/owl#maxCardinality> ""2""^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> . 
-< http://example.com/demo#childOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://example.com/demo#parentOf> .
+<http://example.com/demo#childOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://example.com/demo#parentOf> .
 <http://example.com/demo#subject001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/demo#Person> .
+<http://example.com/demo#subject001> <http://xmlns.com/foaf/0.1/givenName> ""Alice"" .
 <http://example.com/demo#subject002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/demo#Person> .
+<http://example.com/demo#subject002> <http://xmlns.com/foaf/0.1/givenName> ""Bob"" .
+<http://example.com/demo#subject003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/demo#Person> .
+<http://example.com/demo#subject003> <http://xmlns.com/foaf/0.1/givenName> ""Claire"" .
 <http://example.com/demo#subject001> <http://example.com/demo#childOf> <http://example.com/demo#subject002> .
+<http://example.com/demo#subject002> <http://example.com/demo#childOf> <http://example.com/demo#subject003> .
 ".Trim()));
 
             var result = RDFSharp.Model.RDFGraph.FromStream(
