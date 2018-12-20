@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Semantics;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -39,15 +40,18 @@ namespace RdfDemo
 
             var x = new RDFSharp.Query.RDFVariable("x");
             var y = new RDFSharp.Query.RDFVariable("y");
-            var patternGroup = new RDFSharp.Query.RDFPatternGroup("PG1");
-            patternGroup.AddPattern(new RDFSharp.Query.RDFPattern(
-                x,
-                new RDFSharp.Model.RDFResource("http://example.com/demo#name"),
-                new RDFSharp.Model.RDFPlainLiteral("Alice")));
-            patternGroup.AddPattern(new RDFSharp.Query.RDFPattern(
-                y,
-                new RDFSharp.Model.RDFResource("http://example.com/demo#parentOf"),
-                x));
+            var patterns = new List<RDFSharp.Query.RDFPattern>
+            {
+                new RDFSharp.Query.RDFPattern(
+                    x,
+                    new RDFSharp.Model.RDFResource("http://example.com/demo#name"),
+                    new RDFSharp.Model.RDFPlainLiteral("Alice")),
+                new RDFSharp.Query.RDFPattern(
+                    y,
+                    new RDFSharp.Model.RDFResource("http://example.com/demo#parentOf"),
+                    x),
+            };
+            var patternGroup = new RDFSharp.Query.RDFPatternGroup("PG1", patterns);
             var query = new RDFSharp.Query.RDFSelectQuery();
             query.AddPatternGroup(patternGroup);
             var result = query.ApplyToOntology(ontology);
