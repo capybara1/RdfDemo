@@ -137,6 +137,36 @@ namespace RdfDemo
         }
 
         [TestMethod]
+        public void CompactionOfGraphWithLocalContextUsingReverseProperty()
+        {
+            var expandedContentDocument = JsonLdDocuments.Graph;
+            var contextDocument = JToken.Parse(@"{
+                '@context': {
+                    '@vocab': 'http://example.com/demo/vocab/',
+                    'residentOf':
+                    {
+                        '@type': '@id'
+                    },
+                    'homeOf': {
+                        '@type': '@id',
+                        '@reverse': 'residentOf'
+                    },
+                    'address':
+                    {
+                        '@type': '@id'
+                    }
+                }
+            }");
+            var options = new JsonLD.Core.JsonLdOptions();
+            var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
+                expandedContentDocument,
+                contextDocument,
+                options);
+
+            Util.WriteLine(contentDocument.ToString());
+        }
+
+        [TestMethod]
         public void FlatteningOfNestedObjects()
         {
             var expandedContentDocument = JsonLdDocuments.NestedObjects;

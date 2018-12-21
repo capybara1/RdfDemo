@@ -114,11 +114,6 @@ namespace RdfDemo
                         '@value': 'March Hare'
                     }
                 ],
-                'http://example.com/demo/vocab/residentOf': [
-                    {
-                        '@id': 'http://example.com/demo/002'
-                    }
-                ]
             },
             {
                 '@id': 'http://example.com/demo/002',
@@ -134,7 +129,14 @@ namespace RdfDemo
                     {
                         '@value': 'Garden of the March Hare'
                     }
-                ]
+                ],
+                '@reverse': {
+                    'http://example.com/demo/vocab/residentOf': [
+                        {
+                            '@id': 'http://example.com/demo/001'
+                        }
+                    ]
+                }
             },
             {
                 '@id': 'http://example.com/demo/003',
