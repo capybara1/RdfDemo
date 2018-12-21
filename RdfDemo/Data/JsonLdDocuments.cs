@@ -39,6 +39,11 @@ namespace RdfDemo
                 {
                     '@id': 'http://www.johndoe.com'
                 }
+            ],
+            'http://xmlns.com/foaf/0.1/knows': [
+                {
+                    '@id': 'http://example.com/demo/002'
+                }
             ]
         }");
 
@@ -66,6 +71,11 @@ namespace RdfDemo
             'http://schema.org/gender': [
                 {
                     '@value': 'http://schema.org/Female'
+                }
+            ],
+            'http://xmlns.com/foaf/0.1/homepage': [
+                {
+                    '@id': 'http://www.janedoe.com'
                 }
             ],
             'http://xmlns.com/foaf/0.1/knows': [

@@ -29,7 +29,7 @@ namespace RdfDemo
                     'knows': {
                         '@id': 'http://xmlns.com/foaf/0.1/knows',
                         '@type': '@id'
-                    },
+                    }
                 }
             }");
             var options = new JsonLD.Core.JsonLdOptions();
@@ -55,6 +55,10 @@ namespace RdfDemo
                     },
                     'gender': 'http://schema.org/gender',
                     'homepage': {
+                        '@type': '@id'
+                    },
+                    'knows':
+                    {
                         '@type': '@id'
                     }
                 }
@@ -135,7 +139,7 @@ namespace RdfDemo
                 'residentOf': {
                     '@type':'Building',
                     'address': {
-                        '@type':'Person'
+                        '@type':'Address'
                     }
                 }
             }");
