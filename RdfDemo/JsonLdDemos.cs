@@ -242,6 +242,7 @@ namespace RdfDemo
                     },
                     'items': [ 'a', 'b', 'c' ]
                 }"),
+                // @set does not add semantics but can be used for documentation
                 JToken.Parse(@"{
                     '@context': {
                         '@vocab': 'http://example.com/demo/vocab/',
@@ -260,6 +261,7 @@ namespace RdfDemo
                     },
                     'items': [ 'a', 'b', 'c' ]
                 }"),
+                // @index does not add semantics but can be used to preserve structure
                 JToken.Parse(@"{
                     '@context': {
                         '@vocab': 'http://example.com/demo/vocab/',
