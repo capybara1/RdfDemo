@@ -126,6 +126,8 @@ _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
                 RDFSharp.Model.RDFVocabulary.FOAF.FAMILY_NAME,
                 new RDFSharp.Model.RDFPlainLiteral("Doe")));
             var query = new RDFSharp.Query.RDFSelectQuery();
+            query.AddProjectionVariable(x);
+            query.AddProjectionVariable(y);
             query.AddPatternGroup(patternGroup);
             var result = query.ApplyToStore(store);
 

@@ -53,6 +53,7 @@ namespace RdfDemo
             };
             var patternGroup = new RDFSharp.Query.RDFPatternGroup("PG1", patterns);
             var query = new RDFSharp.Query.RDFSelectQuery();
+            query.AddProjectionVariable(y);
             query.AddPatternGroup(patternGroup);
             var result = query.ApplyToOntology(ontology);
 
