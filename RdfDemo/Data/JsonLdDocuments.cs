@@ -14,6 +14,16 @@ namespace RdfDemo
             '@type': [
                 'http://xmlns.com/foaf/0.1/Person'
             ],
+            'http://xmlns.com/foaf/0.1/title': [
+                {
+                    '@value': 'Mr',
+                    '@language': 'en'
+                },
+                {
+                    '@value': 'Herr',
+                    '@language': 'de'
+                }
+            ],
             'http://xmlns.com/foaf/0.1/givenName': [
                 {
                     '@value': 'John'
@@ -51,6 +61,16 @@ namespace RdfDemo
             '@id': 'http://example.com/demo/002',
             '@type': [
                 'http://xmlns.com/foaf/0.1/Person'
+            ],
+            'http://xmlns.com/foaf/0.1/title': [
+                {
+                    '@value': 'Mrs',
+                    '@language': 'en'
+                },
+                {
+                    '@value': 'Frau',
+                    '@language': 'de'
+                }
             ],
             'http://xmlns.com/foaf/0.1/givenName': [
                 {

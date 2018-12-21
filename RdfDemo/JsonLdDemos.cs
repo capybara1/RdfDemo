@@ -13,8 +13,48 @@ namespace RdfDemo
             var contextDocument = JToken.Parse(@"{
                 '@context':
                 {
-                    'Person': 'http://xmlns.com/foaf/0.1/Person',
                     'xsd': 'http://www.w3.org/2001/XMLSchema#',
+                    'Person': 'http://xmlns.com/foaf/0.1/Person',
+                    'title': 'http://xmlns.com/foaf/0.1/title',
+                    'givenName': 'http://xmlns.com/foaf/0.1/givenName',
+                    'familyName': 'http://xmlns.com/foaf/0.1/familyName',
+                    'born': {
+                        '@id': 'http://schema.org/birthDate',
+                        '@type': 'xsd:date'
+                    },
+                    'gender': 'http://schema.org/gender',
+                    'homepage': {
+                        '@id': 'http://xmlns.com/foaf/0.1/homepage',
+                        '@type': '@id'
+                    },
+                    'knows': {
+                        '@id': 'http://xmlns.com/foaf/0.1/knows',
+                        '@type': '@id'
+                    }
+                }
+            }");
+            var options = new JsonLD.Core.JsonLdOptions();
+            var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
+                expandedContentDocument,
+                contextDocument,
+                options);
+
+            Util.WriteLine(contentDocument.ToString());
+        }
+
+        [TestMethod]
+        public void CompactionWithEmbeddedContextUsingDefaultLanguage()
+        {
+            var expandedContentDocument = JsonLdDocuments.SingleObject;
+            var contextDocument = JToken.Parse(@"{
+                '@context':
+                {
+                    'xsd': 'http://www.w3.org/2001/XMLSchema#',
+                    'Person': 'http://xmlns.com/foaf/0.1/Person',
+                    'title': {
+                        '@id': 'http://xmlns.com/foaf/0.1/title',
+                        '@language': 'en'
+                    },
                     'givenName': 'http://xmlns.com/foaf/0.1/givenName',
                     'familyName': 'http://xmlns.com/foaf/0.1/familyName',
                     'born': {
@@ -49,6 +89,9 @@ namespace RdfDemo
                 '@context': {
                     '@vocab': 'http://xmlns.com/foaf/0.1/',
                     'xsd': 'http://www.w3.org/2001/XMLSchema#',
+                    'title': {
+                        '@language': 'en'
+                    },
                     'born': {
                         '@id': 'http://schema.org/birthDate',
                         '@type': 'xsd:date'
@@ -77,7 +120,12 @@ namespace RdfDemo
         {
             var expandedContentDocument = JsonLdDocuments.SingleObject;
             var contextDocument = JToken.Parse(@"{
-                '@context': [ 'https://json-ld.org/contexts/person.jsonld' ]
+                '@context': [
+                    {
+                        'title': 'http://xmlns.com/foaf/0.1/title',
+                    },
+                    'https://json-ld.org/contexts/person.jsonld'
+                ]
             }");
             var options = new JsonLD.Core.JsonLdOptions();
             var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
