@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace RdfDemo
 {
@@ -271,19 +272,34 @@ namespace RdfDemo
                         'y': 'b',
                         'z': 'c' 
                     }
+                }"),
+                JToken.Parse(@"{
+                    '@context': {
+                        '@vocab': 'http://example.com/demo/vocab/',
+                        'items': {
+                            '@container': '@language'
+                        }
+                    },
+                    'items': {
+                        'en': 'a',
+                        'de': 'b',
+                        'nl': 'c' 
+                    }
                 }")
             };
-            
+
+            var relevantKeys = new[] { "value", "language" };
             foreach (var example in examples)
             {
                 Util.WriteLine(example.ToString());
                 var dataset = (JsonLD.Core.RDFDataset)JsonLD.Core.JsonLdProcessor.ToRDF(example);
                 foreach (var quad in dataset.GetQuads("@default"))
                 {
-                    var subject = (JsonLD.Core.RDFDataset.Node)quad["subject"];
-                    var predicate = (JsonLD.Core.RDFDataset.Node)quad["predicate"];
-                    var @object = (JsonLD.Core.RDFDataset.Node)quad["object"];
-                    Util.WriteLine($"{subject["value"]} {predicate["value"]} {@object["value"]}");
+                    var values = quad.Keys
+                        .Select(key => quad[key])
+                        .OfType<JsonLD.Core.RDFDataset.Node>()
+                        .SelectMany(node => node.Keys.Intersect(relevantKeys).Select(k => node[k]));
+                    Util.WriteLine(string.Join(" ", values));
                 }
             }
         }
