@@ -9,7 +9,7 @@ namespace RdfDemo
 {
     internal static class JsonLdDocuments
     {
-        public static readonly JToken John = JToken.Parse(@"{
+        public static readonly JToken SingleObject = JToken.Parse(@"{
             '@id': 'http://example.com/demo/001',
             '@type': [
                 'http://xmlns.com/foaf/0.1/Person'
@@ -42,7 +42,7 @@ namespace RdfDemo
             ]
         }");
 
-        public static readonly JToken Jane = JToken.Parse(@"{
+        public static readonly JToken NestedObjects = JToken.Parse(@"{
             '@id': 'http://example.com/demo/002',
             '@type': [
                 'http://xmlns.com/foaf/0.1/Person'
@@ -69,8 +69,54 @@ namespace RdfDemo
                 }
             ],
             'http://xmlns.com/foaf/0.1/knows': [
-                " + John + @"
+                " + SingleObject + @"
             ]
         }");
+
+        public static readonly JToken Graph = JToken.Parse(@"[
+            {
+                '@id': 'http://example.com/demo/001',
+                '@type': [
+                    'http://example.com/demo/vocab/Person'
+                ],
+                'http://example.com/demo/vocab/name': [
+                    {
+                        '@value': 'March Hare'
+                    }
+                ],
+                'http://example.com/demo/vocab/residentOf': [
+                    {
+                        '@id': 'http://example.com/demo/002'
+                    }
+                ]
+            },
+            {
+                '@id': 'http://example.com/demo/002',
+                '@type': [
+                    'http://example.com/demo/vocab/Building'
+                ],
+                'http://example.com/demo/vocab/address': [
+                    {
+                        '@id': 'http://example.com/demo/003'
+                    }
+                ],
+                'http://example.com/demo/vocab/name': [
+                    {
+                        '@value': 'Garden of the March Hare'
+                    }
+                ]
+            },
+            {
+                '@id': 'http://example.com/demo/003',
+                '@type': [
+                    'http://example.com/demo/vocab/Address'
+                ],
+                'http://example.com/demo/vocab/country': [
+                    {
+                        '@value': 'Wonderland'
+                    }
+                ]
+            }
+        ]");
     }
 }
