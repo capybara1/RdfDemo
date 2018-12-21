@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicDemos.cs" />
+    <Compile Include="Data\JsonLdDocuments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SemanticsDemos.cs" />
     <Compile Include="JsonLdDemos.cs" />

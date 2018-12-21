@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
 namespace RdfDemo
@@ -8,77 +6,6 @@ namespace RdfDemo
     [TestClass]
     public class JsonLdDemos
     {
-        private static readonly object John = new object();
-        private static readonly object Jane = new object();
-
-        private static readonly IDictionary<object, JToken> ExpandedDocuments = new Dictionary<object, JToken>
-        {
-            [John] = JToken.Parse(@"{
-                '@id': 'http://example.com/demo/001',
-                '@type': [
-                    'http://xmlns.com/foaf/0.1/Person'
-                ],
-                'http://xmlns.com/foaf/0.1/givenName': [
-                    {
-                        '@value': 'John'
-                    }
-                ],
-                'http://xmlns.com/foaf/0.1/familyName': [
-                    {
-                        '@value': 'Doe'
-                    }
-                ],
-                'http://schema.org/birthDate': [
-                    {
-                        '@value': '1970-01-01T00:00:00Z',
-                        '@type': 'http://www.w3.org/2001/XMLSchema#date'
-                    }
-                ],
-                'http://schema.org/gender': [
-                    {
-                        '@value': 'http://schema.org/Male'
-                    }
-                ],
-                'http://xmlns.com/foaf/0.1/homepage': [
-                    {
-                        '@id': 'http://www.johndoe.com'
-                    }
-                ]
-            }"),
-            [Jane] = JToken.Parse(@"{
-                '@id': 'http://example.com/demo/002',
-                '@type': [
-                    'http://xmlns.com/foaf/0.1/Person'
-                ],
-                'http://xmlns.com/foaf/0.1/givenName': [
-                    {
-                        '@value': 'Jane'
-                    }
-                ],
-                'http://xmlns.com/foaf/0.1/familyName': [
-                    {
-                        '@value': 'Doe'
-                    }
-                ],
-                'http://schema.org/birthDate': [
-                    {
-                        '@value': '1970-01-02T00:00:00Z',
-                        '@type': 'http://www.w3.org/2001/XMLSchema#date'
-                    }
-                ],
-                'http://schema.org/gender': [
-                    {
-                        '@value': 'http://schema.org/Female'
-                    }
-                ],
-                'http://xmlns.com/foaf/0.1/knows': [
-                    {
-                        '@id': 'http://example.com/demo/001'
-                    }
-                ]
-            }"),
-        };
-
         [TestMethod]
         public void CompactionWithEmbeddedContext()
         {
@@ -106,7 +33,7 @@ namespace RdfDemo
             }");
             var options = new JsonLD.Core.JsonLdOptions();
             var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                ExpandedDocuments[John],
+                JsonLdDocuments.John,
                 contextDocument,
                 options);
 
@@ -132,7 +59,7 @@ namespace RdfDemo
             }");
             var options = new JsonLD.Core.JsonLdOptions();
             var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                ExpandedDocuments[John],
+                JsonLdDocuments.John,
                 contextDocument,
                 options);
 
@@ -147,7 +74,7 @@ namespace RdfDemo
             }");
             var options = new JsonLD.Core.JsonLdOptions();
             var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                ExpandedDocuments[John],
+                JsonLdDocuments.John,
                 contextDocument,
                 options);
 
@@ -155,14 +82,25 @@ namespace RdfDemo
         }
 
         [TestMethod]
-        public void CompactionOfGraph()
+        public void FlatteningOfNestedObjects()
         {
             var contextDocument = JToken.Parse(@"{
-                '@context': [ 'https://json-ld.org/contexts/person.jsonld' ]
+                '@context': {
+                    '@vocab': 'http://xmlns.com/foaf/0.1/',
+                    'xsd': 'http://www.w3.org/2001/XMLSchema#',
+                    'born': {
+                        '@id': 'http://schema.org/birthDate',
+                        '@type': 'xsd:date'
+                    },
+                    'gender': 'http://schema.org/gender',
+                    'homepage': {
+                        '@type': '@id'
+                    }
+                }
             }");
             var options = new JsonLD.Core.JsonLdOptions();
-            var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                JToken.Parse($"[ {ExpandedDocuments[John]}, {ExpandedDocuments[Jane]} ]"),
+            var contentDocument = JsonLD.Core.JsonLdProcessor.Flatten(
+                JsonLdDocuments.Jane,
                 contextDocument,
                 options);
 
