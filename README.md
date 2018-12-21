@@ -63,6 +63,10 @@ Demo Code with Examples for educational purpose
 - [JSON-LD 1.0](https://www.w3.org/TR/json-ld/)
 - [JSON-LD 1.1 Processing Algorithms and API](https://www.w3.org/TR/json-ld11-api/)
 
+#### Slides
+
+- [JSON-LD by Gregg Kellogg](https://de.slideshare.net/gkellogg1/json-for-linked-data)
+
 #### Discussion
 
 - [Comment on the intentional isolation of JSON-LD from other Semantic Web Technologies](http://manu.sporny.org/2014/json-ld-origins-2/)
