@@ -68,9 +68,9 @@ namespace RdfDemo
 
             foreach (var quad in token.GetQuads("@default"))
             {
-                var subject = (JsonLD.Core.RDFDataset.IRI)quad["subject"];
-                var predicate = (JsonLD.Core.RDFDataset.IRI)quad["predicate"];
-                var literal = (JsonLD.Core.RDFDataset.Literal)quad["object"];
+                var subject = (JsonLD.Core.RDFDataset.Node)quad["subject"];
+                var predicate = (JsonLD.Core.RDFDataset.Node)quad["predicate"];
+                var literal = (JsonLD.Core.RDFDataset.Node)quad["object"];
                 result.AddTriple(new RDFSharp.Model.RDFTriple(
                     new RDFSharp.Model.RDFResource(subject["value"].ToString()),
                     new RDFSharp.Model.RDFResource(predicate["value"].ToString()),

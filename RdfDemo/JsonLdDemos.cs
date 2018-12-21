@@ -229,5 +229,63 @@ namespace RdfDemo
 
             Util.WriteLine(contentDocument.ToString());
         }
+
+        [TestMethod]
+        public void DemonstrateDifferenceBetweenContainers()
+        {
+            var examples = new[]
+            {
+                JToken.Parse(@"{
+                    '@context': {
+                        '@vocab': 'http://example.com/demo/vocab/'
+                    },
+                    'items': [ 'a', 'b', 'c' ]
+                }"),
+                JToken.Parse(@"{
+                    '@context': {
+                        '@vocab': 'http://example.com/demo/vocab/',
+                        'items': {
+                            '@container': '@set'
+                        }
+                    },
+                    'items': [ 'a', 'b', 'c' ]
+                }"),
+                JToken.Parse(@"{
+                    '@context': {
+                        '@vocab': 'http://example.com/demo/vocab/',
+                        'items': {
+                            '@container': '@list'
+                        }
+                    },
+                    'items': [ 'a', 'b', 'c' ]
+                }"),
+                JToken.Parse(@"{
+                    '@context': {
+                        '@vocab': 'http://example.com/demo/vocab/',
+                        'items': {
+                            '@container': '@index'
+                        }
+                    },
+                    'items': {
+                        'x': 'a',
+                        'y': 'b',
+                        'z': 'c' 
+                    }
+                }")
+            };
+            
+            foreach (var example in examples)
+            {
+                Util.WriteLine(example.ToString());
+                var dataset = (JsonLD.Core.RDFDataset)JsonLD.Core.JsonLdProcessor.ToRDF(example);
+                foreach (var quad in dataset.GetQuads("@default"))
+                {
+                    var subject = (JsonLD.Core.RDFDataset.Node)quad["subject"];
+                    var predicate = (JsonLD.Core.RDFDataset.Node)quad["predicate"];
+                    var @object = (JsonLD.Core.RDFDataset.Node)quad["object"];
+                    Util.WriteLine($"{subject["value"]} {predicate["value"]} {@object["value"]}");
+                }
+            }
+        }
     }
 }
