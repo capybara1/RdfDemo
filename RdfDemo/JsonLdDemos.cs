@@ -289,20 +289,16 @@ namespace RdfDemo
                     }
                 }")
             };
+            NewMethod(examples);
+        }
 
-            var relevantKeys = new[] { "value", "language" };
+        private static void NewMethod(JToken[] examples)
+        {
             foreach (var example in examples)
             {
                 Util.WriteLine(example.ToString());
                 var dataset = (JsonLD.Core.RDFDataset)JsonLD.Core.JsonLdProcessor.ToRDF(example);
-                foreach (var quad in dataset.GetQuads("@default"))
-                {
-                    var values = quad.Keys
-                        .Select(key => quad[key])
-                        .OfType<JsonLD.Core.RDFDataset.Node>()
-                        .SelectMany(node => node.Keys.Intersect(relevantKeys).Select(k => node[k]));
-                    Util.WriteLine(string.Join(" ", values));
-                }
+                Util.WriteDataset(dataset);
             }
         }
     }
