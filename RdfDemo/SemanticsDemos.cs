@@ -31,6 +31,9 @@ namespace RdfDemo
             }
 
             var reasoner = RDFOntologyReasoner.CreateNew("Default")
+                .WithRule(RDFBASEReasonerRuleset.DomainEntailment)
+                .WithRule(RDFBASEReasonerRuleset.RangeEntailment)
+                .WithRule(RDFBASEReasonerRuleset.SubClassTransitivity)
                 .WithRule(RDFBASEReasonerRuleset.SubPropertyTransitivity)
                 .WithRule(RDFBASEReasonerRuleset.TransitivePropertyEntailment)
                 .WithRule(RDFBASEReasonerRuleset.SymmetricPropertyEntailment)
@@ -102,10 +105,11 @@ namespace RdfDemo
 <http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.com/demo#Person> .
 <http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://example.com/demo#predecessorOf> .
 <http://example.com/demo#childOf> <http://www.w3.org/2000/01/rdf-schema#label> ""is child of"" .
+<http://example.com/demo#childOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://example.com/demo#parentOf> .
+<http://example.com/demo#Person> <http://www.w3.org/2000/01/rdf-schema#subClassOf> _:genid1 .
 _:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
 _:genid1 <http://www.w3.org/2002/07/owl#onProperty> <http://example.com/demo#childOf> .
-_:genid1 <http://www.w3.org/2002/07/owl#maxCardinality> ""2""^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> . 
-<http://example.com/demo#childOf> <http://www.w3.org/2002/07/owl#inverseOf> <http://example.com/demo#parentOf> .
+_:genid1 <http://www.w3.org/2002/07/owl#cardinality> ""2""^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> .
 <http://example.com/demo#subject001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/demo#Person> .
 <http://example.com/demo#subject001> <http://example.com/demo#name> ""Alice"" .
 <http://example.com/demo#subject002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/demo#Person> .
