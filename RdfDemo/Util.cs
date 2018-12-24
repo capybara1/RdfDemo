@@ -9,12 +9,14 @@ namespace RdfDemo
 {
     internal static class Util
     {
+        private const string ValueNodeKey = "value";
+        private const string DataTypeNodeKey = "datatype";
+        private const string LanguageNodeKey = "language";
+        
         private static readonly IEnumerable<RDFSharp.Model.RDFModelEnums.RDFFormats> AvailableSerializationFormats = Enum.GetValues(typeof(RDFSharp.Model.RDFModelEnums.RDFFormats))
             .Cast<RDFSharp.Model.RDFModelEnums.RDFFormats>()
             .Where(f => f != RDFSharp.Model.RDFModelEnums.RDFFormats.TriX);
-
-        private static readonly IEnumerable<string> RelevantNodeKeys = new[] { "value", "language" };
-
+        
         public static void WriteSerializedRepresentations(RDFSharp.Model.RDFGraph graph)
         {
             var serializationsByFormat = AvailableSerializationFormats.ToDictionary(
@@ -94,11 +96,10 @@ namespace RdfDemo
         {
             foreach (var quad in dataset.GetQuads("@default"))
             {
-                var values = quad.Keys
+                var nodes = quad.Keys
                     .Select(key => quad[key])
-                    .OfType<JsonLD.Core.RDFDataset.Node>()
-                    .SelectMany(node => node.Keys.Intersect(RelevantNodeKeys).Select(k => node[k]));
-                Util.WriteLine(string.Join(" ", values));
+                    .OfType<JsonLD.Core.RDFDataset.Node>();
+                WriteLine(string.Join(" ", nodes.Select(FormatString)));
             }
         }
 
@@ -106,40 +107,40 @@ namespace RdfDemo
         {
             RDFSharp.Query.RDFPatternMember result;
 
-            switch ((JsonLD.Core.RDFDataset.Node)node)
+            switch (node)
             {
                 case JsonLD.Core.RDFDataset.IRI iri:
-                    result = new RDFSharp.Model.RDFResource(iri["value"].ToString());
+                    result = new RDFSharp.Model.RDFResource(iri[ValueNodeKey].ToString());
                     break;
 
                 case JsonLD.Core.RDFDataset.BlankNode blankNode:
-                    result = new RDFSharp.Model.RDFResource(blankNode["value"].ToString());
+                    result = new RDFSharp.Model.RDFResource(blankNode[ValueNodeKey].ToString());
                     break;
 
                 case JsonLD.Core.RDFDataset.Literal literal:
-                    if (literal.Keys.Contains("language"))
+                    if (literal.Keys.Contains(LanguageNodeKey))
                     {
                         result = new RDFSharp.Model.RDFPlainLiteral(
-                            literal["value"].ToString(),
-                            literal["language"].ToString());
+                            literal[ValueNodeKey].ToString(),
+                            literal[LanguageNodeKey].ToString());
                     }
-                    else if (literal.Keys.Contains("datatype"))
+                    else if (literal.Keys.Contains(DataTypeNodeKey))
                     {
-                        var dataType = ToRDFDataType(literal["datatype"].ToString());
+                        var dataType = ToRDFDataType(literal[DataTypeNodeKey].ToString());
                         if (dataType == RDFSharp.Model.RDFModelEnums.RDFDatatypes.XSD_STRING)
                         {
-                            result = new RDFSharp.Model.RDFPlainLiteral(literal["value"].ToString());
+                            result = new RDFSharp.Model.RDFPlainLiteral(literal[ValueNodeKey].ToString());
                         }
                         else
                         {
                             result = new RDFSharp.Model.RDFTypedLiteral(
-                                literal["value"].ToString(),
+                                literal[ValueNodeKey].ToString(),
                                 dataType);
                         }
                     }
                     else
                     {
-                        result = new RDFSharp.Model.RDFPlainLiteral(literal["value"].ToString());
+                        result = new RDFSharp.Model.RDFPlainLiteral(literal[ValueNodeKey].ToString());
                     }
                     break;
 
@@ -301,6 +302,42 @@ namespace RdfDemo
                     break;
                 default:
                     throw new NotSupportedException($"Type {value} is not supported");
+            }
+
+            return result;
+        }
+
+        private static string FormatString(object node)
+        {
+            string result;
+
+            switch (node)
+            {
+                case JsonLD.Core.RDFDataset.BlankNode blankNode:
+                    result = $"<{blankNode[ValueNodeKey]}>";
+                    break;
+
+                case JsonLD.Core.RDFDataset.IRI iri:
+                    result = $"<{iri[ValueNodeKey]}>";
+                    break;
+
+                case JsonLD.Core.RDFDataset.Literal literal:
+                    if (literal.Keys.Contains(LanguageNodeKey))
+                    {
+                        result = $"\"{literal[ValueNodeKey]}\"^^{literal[LanguageNodeKey]}";
+                    }
+                    else if (!Equals(literal[DataTypeNodeKey], "http://www.w3.org/2001/XMLSchema#string"))
+                    {
+                        result = $"\"{literal[ValueNodeKey]}\"^^{literal[DataTypeNodeKey]}";
+                    }
+                    else
+                    {
+                        result = $"\"{literal[ValueNodeKey]}\"";
+                    }
+                    break;
+
+                default:
+                    throw new NotSupportedException($"The type {node.GetType().Name} is not supported");
             }
 
             return result;
