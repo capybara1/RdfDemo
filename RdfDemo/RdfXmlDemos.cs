@@ -21,6 +21,11 @@ namespace RdfDemo
         <voc:prop2 datatype='http://www.w3.org/2001/XMLSchema#int'>123</voc:prop2>
         <voc:prop3 xml:lang='en'>LocalizedLiteralValue</voc:prop3>
         <voc:prop4 resource='http://example.com/demo/vocab#Other' />
+        <voc:prop5 nodeID='blankNode1' />
+    </Description>
+
+    <Description nodeID='blankNode1'>
+        <voc:prop>LiteralValue</voc:prop>
     </Description>
 
 </RDF>",
@@ -116,6 +121,29 @@ namespace RdfDemo
         }
 
         [TestMethod]
+        public void SerializationOfXmlLiterals()
+        {
+            var graph = Util.DeserializeGraph(@"<?xml version='1.0'?>
+<RDF
+    xmlns='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+    xmlns:voc='http://example.com/demo/vocab#'
+    xml:base='http://example.com/demo/vocab#'>
+ 
+    <Description about='MyObject'>
+        <voc:prop parseType='Literal'>
+            <example xmlns='http://example.com/demo/xml' info='Example XML' />
+        </voc:prop>
+    </Description>
+
+</RDF>",
+            RDFSharp.Model.RDFModelEnums.RDFFormats.RdfXml);
+
+            Util.WriteSerializedRepresentation(
+                graph,
+                RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples);
+        }
+        
+        [TestMethod]
         public void SerializationOfSpecificRdfSchemaElements()
         {
             var graph = Util.DeserializeGraph(@"<?xml version='1.0'?>
@@ -127,10 +155,9 @@ namespace RdfDemo
  
     <Class about='MyObject'>
         <rdfs:subClassOf resource='Other' />
-        <voc:prop datatype='http://www.w3.org/2001/XMLSchema#int'>123</voc:prop>
     </Class>
 
-    <Property about='prop1'>
+    <Property about='prop'>
         <rdfs:domain resource='MyObject' />
         <rdfs:range resource='http://www.w3.org/2001/XMLSchema#int' />
     </Property>
