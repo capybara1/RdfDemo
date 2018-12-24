@@ -18,6 +18,9 @@ Container types such as `rdf:Bag`, `rdf:Seq` and `rdf:Alt` are formally indiffer
 because a gaph does not impose any order to the edges of a node.
 However, the type indicates to the human reader that there is a special meaning to the order of the items.
 
+The class `rdf:ContainerMembershipProperty` has as instances the properties `rdf:_1`, `rdf:_2` ... .
+Those properties are intended to assign members to a container.
+
 Containers are open for extension.
 
 #### RDF Collections
