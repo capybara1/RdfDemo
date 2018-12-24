@@ -63,6 +63,12 @@ Level     | Description                                                         
  OWL DL   | A subset of OWL Full that is determinalbe and equivalent to first order logic |
  OWL Full | Is not determinable, yet may be used as base for higher order logic           |
 
+#### Semantics
+
+Known meanings and conventions (i.e. *semantic assumptions*), defined within the specification of vocabularies auch as e.g. OWL DL,
+can be used to infer additional statements (known as an *entailment regime*) that may be considered valid under the presence
+of these assumptions.
+
 ### Reference
 
 - [RDF 1.1 Primer](https://www.w3.org/TR/rdf11-primer/)
