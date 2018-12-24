@@ -129,10 +129,20 @@ namespace RdfDemo
                 ]
             }");
             var options = new JsonLD.Core.JsonLdOptions();
-            var contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                expandedContentDocument,
-                contextDocument,
-                options);
+            JObject contentDocument;
+            try
+            {
+                contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
+                    expandedContentDocument,
+                    contextDocument,
+                    options);
+            }
+            catch (JsonLD.Core.JsonLdError exception)
+            when (exception.Message == "loading remote context failed")
+            {
+                Assert.Inconclusive("No access to remote context at 'https://json-ld.org/contexts/person.jsonld'");
+                return;
+            }
 
             Util.WriteLine(contentDocument.ToString());
         }
