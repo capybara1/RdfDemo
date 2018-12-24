@@ -24,44 +24,13 @@ namespace RdfDemo
         public void DemonstrateSerializationFormatsForSimpleGraph()
         {
             var graph = ConstructGraph();
-
-            Util.WriteSerializedRepresentations(graph);
-        }
-
-        [TestMethod]
-        public void DemonstrateSerializationFormatsForContainer()
-        {
-            var graph = Util.DeserializeGraph(
-                @"
-<http://example.org/courses/6.001> <http://example.org/students/vocab#students> _:genid1 .
-_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> .
-_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> <http://example.org/students/Amy> .
-_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#_2> <http://example.org/students/Mohamed> .
-_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#_3> <http://example.org/students/Johann> .
-".Trim(),
-                RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples);
-
-            Util.WriteSerializedRepresentations(graph);
-        }
-
-        [TestMethod]
-        public void DemonstrateSerializationFormatsForCollection()
-        {
-            var graph = Util.DeserializeGraph(
-                @"
-<http://recshop.fake/cd/Beatles> <http://recshop.fake/cd#artist> _:genid1 .
-_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://recshop.fake/cd/Beatles/George> .
-_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid2 .
-_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://recshop.fake/cd/Beatles/John> .
-_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid3 .
-_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://recshop.fake/cd/Beatles/Paul> .
-_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid4 .
-_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://recshop.fake/cd/Beatles/Ringo> .
-_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-".Trim(),
-                RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples);
-
-            Util.WriteSerializedRepresentations(graph);
+            
+            var contextDocument = JToken.Parse(@"{
+                '@context': {
+                    '@vocab': 'http://xmlns.com/foaf/0.1/'
+                }
+            }");
+            Util.WriteSerializedRepresentations(graph, contextDocument);
         }
 
         [TestMethod]

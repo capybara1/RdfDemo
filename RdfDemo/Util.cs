@@ -17,23 +17,12 @@ namespace RdfDemo
             .Cast<RDFSharp.Model.RDFModelEnums.RDFFormats>()
             .Where(f => f != RDFSharp.Model.RDFModelEnums.RDFFormats.TriX);
         
-        public static void WriteSerializedRepresentations(RDFSharp.Model.RDFGraph graph)
+        public static void WriteSerializedRepresentations(RDFSharp.Model.RDFGraph graph, JToken contextDocument)
         {
             var serializationsByFormat = AvailableSerializationFormats.ToDictionary(
                     f => (object)f,
                     f => SerializeGraph(graph, f)
                 );
-
-            WriteLine($"JSON-LD representation of graph '{graph.Context}'");
-            var contentDocument = JsonLD.Core.JsonLdProcessor.FromRDF(
-                serializationsByFormat[RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples],
-                new JsonLD.Impl.NQuadRDFParser());
-            var contextDocument = JToken.Parse("{ '@context': { '@vocab': 'http://xmlns.com/foaf/0.1/' } }");
-            contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
-                contentDocument,
-                contextDocument,
-                new JsonLD.Core.JsonLdOptions());
-            serializationsByFormat["JSON-LD"] = contentDocument.ToString();
 
             foreach (var kvp in serializationsByFormat)
             {
@@ -42,6 +31,25 @@ namespace RdfDemo
                 WriteLine(kvp.Value);
                 WriteLine();
             }
+
+            WriteLine($"JSON-LD representation of graph '{graph.Context}'");
+            var contentDocument = JsonLD.Core.JsonLdProcessor.FromRDF(
+                serializationsByFormat[RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples],
+                new JsonLD.Impl.NQuadRDFParser());
+            contentDocument = JsonLD.Core.JsonLdProcessor.Compact(
+                contentDocument,
+                contextDocument,
+                new JsonLD.Core.JsonLdOptions());
+            serializationsByFormat["JSON-LD"] = contentDocument.ToString();
+        }
+
+        public static void WriteSerializedRepresentation(RDFSharp.Model.RDFGraph graph, RDFSharp.Model.RDFModelEnums.RDFFormats format)
+        {
+            var serialization = SerializeGraph(graph, format);
+
+            WriteLine($"{format} representation of graph '{graph.Context}'");
+            WriteLine();
+            WriteLine(serialization);
         }
 
         public static string SerializeGraph(RDFSharp.Model.RDFGraph graph, RDFSharp.Model.RDFModelEnums.RDFFormats format)
@@ -324,11 +332,11 @@ namespace RdfDemo
                 case JsonLD.Core.RDFDataset.Literal literal:
                     if (literal.Keys.Contains(LanguageNodeKey))
                     {
-                        result = $"\"{literal[ValueNodeKey]}\"^^{literal[LanguageNodeKey]}";
+                        result = $"\"{literal[ValueNodeKey]}\"@{literal[LanguageNodeKey]}";
                     }
                     else if (!Equals(literal[DataTypeNodeKey], "http://www.w3.org/2001/XMLSchema#string"))
                     {
-                        result = $"\"{literal[ValueNodeKey]}\"^^{literal[DataTypeNodeKey]}";
+                        result = $"\"{literal[ValueNodeKey]}\"^^<{literal[DataTypeNodeKey]}>";
                     }
                     else
                     {
