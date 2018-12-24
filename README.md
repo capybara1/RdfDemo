@@ -36,6 +36,14 @@ The resource `rdf:nil` represents the terminal node in the linked list.
 
 Collections are closed.
 
+#### Reification
+
+Reification allows modeling a statement explicitly, using a blank node of type `rdf:Statement`.
+The properties `rdf:subject`, `rdf:predicate` and `rdf:object` may be used with a `rdf:Statement`.
+
+In contrast to a simple triple, which is the implicit form of a statement,
+the explicit form e.g. is open for providing additional properties about the statement itself.
+
 ### Reference
 
 - [RDF 1.1 Primer](https://www.w3.org/TR/rdf11-primer/)
