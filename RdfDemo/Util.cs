@@ -23,16 +23,7 @@ namespace RdfDemo
                     f => (object)f,
                     f => SerializeGraph(graph, f)
                 );
-
-            foreach (var kvp in serializationsByFormat)
-            {
-                WriteLine($"{kvp.Key} representation of graph '{graph.Context}'");
-                WriteLine();
-                WriteLine(kvp.Value);
-                WriteLine();
-            }
-
-            WriteLine($"JSON-LD representation of graph '{graph.Context}'");
+            
             var contentDocument = JsonLD.Core.JsonLdProcessor.FromRDF(
                 serializationsByFormat[RDFSharp.Model.RDFModelEnums.RDFFormats.NTriples],
                 new JsonLD.Impl.NQuadRDFParser());
@@ -41,6 +32,14 @@ namespace RdfDemo
                 contextDocument,
                 new JsonLD.Core.JsonLdOptions());
             serializationsByFormat["JSON-LD"] = contentDocument.ToString();
+
+            foreach (var kvp in serializationsByFormat)
+            {
+                WriteLine($"{kvp.Key} representation of graph '{graph.Context}'");
+                WriteLine();
+                WriteLine(kvp.Value);
+                WriteLine();
+            }
         }
 
         public static void WriteSerializedRepresentation(RDFSharp.Model.RDFGraph graph, RDFSharp.Model.RDFModelEnums.RDFFormats format)
