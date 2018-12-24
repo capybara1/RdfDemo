@@ -44,6 +44,25 @@ The properties `rdf:subject`, `rdf:predicate` and `rdf:object` may be used with 
 In contrast to a simple triple, which is the implicit form of a statement,
 the explicit form e.g. is open for providing additional properties about the statement itself.
 
+#### Taxonomies/Ontologies
+
+A taxonomy is an attempt to organize a (complex) system of seemingly unrelated concepts (e.g. terms) into classes, properties and relationships.
+Taxonomies are usually considered trees.
+While RDF is basically an abstract framework, both RDFS and OWL specify vocabulary to define taxonomies.
+OWL builds upon RDFS, yet needs to partially replace some of the RDFS-terms in order to introduce additional restrictions, required by its ontological features.
+
+An ontology has a similar goal as a taxonomy, but allows the formalization of additional restrictions on classes, properties and relationships.
+Ontologies are usually considered graphs or hypergraphs.
+OWL specifies vocabulary to define ontologies.
+
+There are 3 different levels of OWL:
+
+Level     | Description                                                                   |
+----------|-------------------------------------------------------------------------------|
+ OWL Lite | A subset of OWL Full that is considered easy to implement                     |
+ OWL DL   | A subset of OWL Full that is determinalbe and equivalent to first order logic |
+ OWL Full | Is not determinable, yet may be used as base for higher order logic           |
+
 ### Reference
 
 - [RDF 1.1 Primer](https://www.w3.org/TR/rdf11-primer/)
